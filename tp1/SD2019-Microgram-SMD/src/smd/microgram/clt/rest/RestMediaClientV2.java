@@ -8,13 +8,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import microgram.api.java.Media;
 import microgram.api.java.Result;
 import microgram.api.rest.RestMediaStorage;
+import smd.microgram.api.java.MediaV2;
 
-public class MediaClient extends RestClient implements Media {
+public class RestMediaClientV2 extends RestClient implements MediaV2 {
 
-	public MediaClient(URI mediaStorage) {
+	public RestMediaClientV2(URI mediaStorage) {
 		super(mediaStorage, RestMediaStorage.PATH );
 	}
 
@@ -27,12 +27,22 @@ public class MediaClient extends RestClient implements Media {
 	}
 
 	public Result<byte[]> download(String url) {
-		System.err.println( url );
 		
 		Response r = client.target(url)
 				.request()
 				.accept(MediaType.APPLICATION_OCTET_STREAM)
 				.get();
 		return responseContents(r, Status.OK, new GenericType<byte[]>(){});
+	}
+
+	@Override
+	public Result<Void> delete(String url) {
+		
+		Response r = client.target(url)
+				.request()
+				.accept(MediaType.APPLICATION_OCTET_STREAM)
+				.get();
+		
+		return super.verifyResponse(r, Status.OK);
 	}
 }
