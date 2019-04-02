@@ -17,6 +17,8 @@ import microgram.api.java.Media;
 import microgram.api.java.Posts;
 import microgram.api.java.Profiles;
 import microgram.impl.clt.rest.RestMediaClient;
+import smd.microgram.api.java.MediaV2;
+import smd.microgram.clt.rest.RestMediaClientV2;
 import smd.microgram.clt.rest.RestPostsClient;
 import smd.microgram.clt.rest.RestProfilesClient;
 import smd.microgram.clt.soap.SoapPostsClient;
@@ -99,7 +101,7 @@ public class MicrogramTest extends BaseTest {
 		return toPostsClient( srv.uri());
 	}
 	
-	synchronized protected Media anyMediaClient() {
+	synchronized protected MediaV2 anyMediaClient() {
 		MediaServer srv = mediaInstances.get(  random().nextInt( mediaInstances.size() ));
 		return toMediaClient( srv.uri());
 	}
@@ -135,8 +137,8 @@ public class MicrogramTest extends BaseTest {
 		return null;	
 	}
 	
-	static Media toMediaClient( URI uri ) {
-		return new RestMediaClient(uri);	
+	static MediaV2 toMediaClient( URI uri ) {
+		return new RestMediaClientV2(uri);	
 	}
 	
 	synchronized protected Profile genNewProfile() {
