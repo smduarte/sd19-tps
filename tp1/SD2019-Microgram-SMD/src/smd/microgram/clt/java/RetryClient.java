@@ -16,7 +16,6 @@ public abstract class RetryClient {
 				func.run();
 				return;
 			} catch (Exception x) {
-				x.printStackTrace();
 				Sleep.ms(RETRY_SLEEP);
 			}
 	}
@@ -28,7 +27,6 @@ public abstract class RetryClient {
 			try {
 				return func.get();
 			} catch (Exception x) {
-				x.printStackTrace();
 				Sleep.ms(RETRY_SLEEP);
 			}
 	}

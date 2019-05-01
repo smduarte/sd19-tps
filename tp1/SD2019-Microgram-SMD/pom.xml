@@ -7,7 +7,8 @@
 	<version>1.0</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<googledrive>/Volumes/GoogleDrive/My Drive/CAMPUS-ROOT/SD2019/jupyter/public-html</googledrive>
+		<googledrive>/Volumes/GoogleDrive/My
+			Drive/CAMPUS-ROOT/SD2019/jupyter/public-html</googledrive>
 		<authors>smd</authors>
 		<dockerfile-maven-version>1.4.10</dockerfile-maven-version>
 	</properties>
@@ -21,13 +22,13 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	
+
 	<distributionManagement>
-        <repository>
-            <id>sd19</id>
-            <url>file://${googledrive}/mvn-repo</url>
-        </repository>
-    </distributionManagement>
+		<repository>
+			<id>sd19</id>
+			<url>file://${googledrive}/mvn-repo</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -83,16 +84,6 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>sd2019</groupId>
-			<artifactId>sd19-tp1-api</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>sd2019</groupId>
-			<artifactId>sd19-tp1-code</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 		</dependency>
@@ -117,6 +108,20 @@
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -144,6 +149,22 @@
 				<groupId>org.glassfish.jersey.media</groupId>
 				<artifactId>jersey-media-json-jackson</artifactId>
 				<version>2.25.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>1.7.26</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.8.5</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.kafka</groupId>
+				<artifactId>kafka-clients</artifactId>
+				<version>2.2.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

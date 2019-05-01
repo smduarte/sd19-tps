@@ -10,97 +10,108 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import microgram.api.Profile;
+import microgram.api.java.Profiles;
 import microgram.api.java.Result;
-import microgram.api.rest.RestProfiles;
-import smd.discovery.Discovery;
-import smd.microgram.api.java.ProfilesV2;
-import smd.microgram.srv.rest.ProfilesRestServer;
 
-
-public class RestProfilesClient extends RestClient implements ProfilesV2 {
+public class RestProfilesClient extends RestClient implements Profiles {
 
 	private static final String FOLLOWING = "/following/";
+	private static final String PARTITIONED = "partitioned";
 
-	public RestProfilesClient() {
-		this( Discovery.findUrisOf(ProfilesRestServer.SERVICE, 1)[0]);
-	}
-	
 	public RestProfilesClient(URI serverUri) {
-		super(serverUri, RestProfiles.PATH);
+		super(serverUri);
 	}
 
 	@Override
 	public Result<Profile> getProfile(String userId) {
-		Response r = target.path(userId)
-				.request()
-				.accept(MediaType.APPLICATION_JSON)
-				.get();
-
-		return responseContents(r, Status.OK, new GenericType<Profile>() {});
+		return super.reTry(() -> _getProfile(userId));
 	}
 
 	@Override
 	public Result<Void> createProfile(Profile profile) {
-		Response r = target
-				.request()
-				.post(Entity.entity(profile, MediaType.APPLICATION_JSON));
-
-		return verifyResponse(r, Status.NO_CONTENT);
-	}
-
-	@Override
-	public Result<Void> updateProfile(Profile profile) {
-		Response r = target
-				.request()
-				.put(Entity.entity(profile, MediaType.APPLICATION_JSON));
-		return verifyResponse(r, Status.NO_CONTENT);
+		return super.reTry(() -> _createProfile(profile));
 	}
 
 	@Override
 	public Result<Void> deleteProfile(String userId) {
-		Response r = target.path(userId)
-				.request()
-				.delete();
-
-		return verifyResponse(r, Status.NO_CONTENT);
+		return super.reTry(() -> _deleteProfile(userId));
 	}
-	
+
 	@Override
-	public Result<List<Profile>> search(String name) {
-		Response r = target.queryParam("query", name)
-				.request()
-				.accept(MediaType.APPLICATION_JSON)
-				.get();
-		return responseContents(r, Status.OK, new GenericType<List<Profile>>() {});
+	public Result<List<Profile>> search(String prefix, boolean partition) {
+		return super.reTry(() -> _search(prefix, partition));
 	}
 
 	@Override
 	public Result<Void> follow(String userId1, String userId2, boolean isFollowing) {
-		Response r = target.path(userId1).path(FOLLOWING).path(userId2)
-				.request()
-				.put(Entity.entity(isFollowing, MediaType.APPLICATION_JSON));
-		
-		return verifyResponse(r, Status.NO_CONTENT);
+		return super.reTry(() -> _follow(userId1, userId2, isFollowing));
 	}
 
 	@Override
 	public Result<Boolean> isFollowing(String userId1, String userId2) {
-		Response r = target.path(userId1).path(FOLLOWING).path(userId2)
-				.request()
-				.accept(MediaType.APPLICATION_JSON)
-				.get();
-		
-		return responseContents(r, Status.OK, new GenericType<Boolean>() {});
+		return super.reTry(() -> _isFollowing(userId1, userId2));
 	}
 
 	@Override
 	public Result<List<String>> following(String userId) {
-		Response r = target.path(userId).path(FOLLOWING)
-				.request()
-				.accept(MediaType.APPLICATION_JSON)
-				.get();
-		
-		System.err.println( r.getStatus() );
-		return responseContents(r, Status.OK, new GenericType<List<String>>() {});
+		return super.reTry(() -> _following(userId));
+	}
+
+	private Result<Profile> _getProfile(String userId) {
+		Response r = target.path(userId).request().accept(MediaType.APPLICATION_JSON).get();
+
+		return responseContents(r, Status.OK, new GenericType<Profile>() {
+		});
+	}
+
+	private Result<Void> _createProfile(Profile profile) {
+		Response r = target.request().post(Entity.entity(profile, MediaType.APPLICATION_JSON));
+
+		return verifyResponse(r, Status.NO_CONTENT);
+	}
+
+	private Result<Void> _deleteProfile(String userId) {
+		Response r = target.path(userId).request().delete();
+
+		return verifyResponse(r, Status.NO_CONTENT);
+	}
+
+	private Result<List<Profile>> _search(String prefix, boolean partitioned) {
+		Response r = target.queryParam("query", prefix).queryParam(PARTITIONED, partitioned).request().accept(MediaType.APPLICATION_JSON).get();
+
+		return responseContents(r, Status.OK, new GenericType<List<Profile>>() {
+		});
+	}
+
+	private Result<Void> _follow(String userId1, String userId2, boolean isFollowing) {
+		Response r = target.path(userId1).path(FOLLOWING).path(userId2).request().put(Entity.entity(isFollowing, MediaType.APPLICATION_JSON));
+
+		return verifyResponse(r, Status.NO_CONTENT);
+	}
+
+	private Result<Boolean> _isFollowing(String userId1, String userId2) {
+		Response r = target.path(userId1).path(FOLLOWING).path(userId2).request().accept(MediaType.APPLICATION_JSON).get();
+
+		return responseContents(r, Status.OK, new GenericType<Boolean>() {
+		});
+	}
+
+	private Result<List<String>> _following(String userId) {
+		Response r = target.path(userId).path(FOLLOWING).request().accept(MediaType.APPLICATION_JSON).get();
+
+		return responseContents(r, Status.OK, new GenericType<List<String>>() {
+		});
+	}
+
+	public Result<List<Profile>> _searchPartition(String prefix) {
+		Response r = target.path(PARTITIONED).queryParam("query", prefix).request().accept(MediaType.APPLICATION_JSON).get();
+
+		return responseContents(r, Status.OK, new GenericType<List<Profile>>() {
+		});
+	}
+
+	@Override
+	public Result<List<Profile>> search(String prefix) {
+		return search(prefix, false);
 	}
 }

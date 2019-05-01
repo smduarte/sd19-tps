@@ -10,9 +10,9 @@ import javax.ws.rs.ext.Provider;
 @Provider
 @PreMatching
 public class PrematchingRequestFilter implements ContainerRequestFilter {
- 
-    @Override
-    public void filter(ContainerRequestContext ctx) throws IOException {
-    	System.err.println( ctx.getMethod() + "/" + ctx.getUriInfo().getAbsolutePath());
-    }
+
+	@Override
+	public void filter(ContainerRequestContext ctx) throws IOException {
+		System.err.println("method: " + ctx.getMethod() + " uri: " + ctx.getUriInfo().getRequestUri());
+	}
 }

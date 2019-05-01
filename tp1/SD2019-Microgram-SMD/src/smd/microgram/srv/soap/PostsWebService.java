@@ -8,36 +8,35 @@ import microgram.api.Post;
 import microgram.api.java.Posts;
 import microgram.api.soap.MicrogramException;
 import microgram.api.soap.SoapPosts;
-import microgram.impl.srv.soap.SoapService;
-import smd.microgram.clt.MicrogramService;
-import smd.microgram.srv.shared.JavaPostsV2;
+import smd.microgram.clt.Clients;
+import smd.microgram.srv.shared.JavaPosts;
 
-@WebService(serviceName=SoapPosts.NAME, targetNamespace=SoapPosts.NAMESPACE, endpointInterface=SoapPosts.INTERFACE)
+@WebService(serviceName = SoapPosts.NAME, targetNamespace = SoapPosts.NAMESPACE, endpointInterface = SoapPosts.INTERFACE)
 public class PostsWebService extends SoapService implements SoapPosts {
 
 	Posts impl;
-	
+
 	protected PostsWebService() {
 	}
 
 	@Override
-	public Post getPost( String postId ) throws MicrogramException {
-		return super.resultOrThrow( impl().getPost(postId));
+	public Post getPost(String postId) throws MicrogramException {
+		return super.resultOrThrow(impl().getPost(postId));
 	}
-	
+
 	@Override
 	public String createPost(Post post) throws MicrogramException {
-		return super.resultOrThrow( impl().createPost(post));
+		return super.resultOrThrow(impl().createPost(post));
 	}
 
 	@Override
 	public boolean isLiked(String postId, String userId) throws MicrogramException {
-		return super.resultOrThrow( impl().isLiked(postId, userId));
+		return super.resultOrThrow(impl().isLiked(postId, userId));
 	}
 
 	@Override
 	public void like(String postId, String userId, boolean isLiked) throws MicrogramException {
-		super.resultOrThrow( impl().like(postId, userId, isLiked));
+		super.resultOrThrow(impl().like(postId, userId, isLiked));
 	}
 
 	@Override
@@ -52,12 +51,12 @@ public class PostsWebService extends SoapService implements SoapPosts {
 
 	@Override
 	public void deletePost(String postId) throws MicrogramException {
-		throw new MicrogramException("not implemented...");
+		super.resultOrThrow(impl().deletePost(postId));
 	}
-	
-	private Posts impl() {
-		if( impl == null) {
-			impl = new JavaPostsV2(MicrogramService.getProfiles());
+
+	synchronized private Posts impl() {
+		if (impl == null) {
+			impl = new JavaPosts(Clients.getProfiles());
 		}
 		return impl;
 	}

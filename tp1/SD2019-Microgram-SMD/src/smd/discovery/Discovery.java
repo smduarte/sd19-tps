@@ -24,11 +24,10 @@ public class Discovery {
 		System.setProperty("java.net.preferIPv4Stack", "true");
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s\n");
 	}
-	
-	
+
 	static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
 	static final int DISCOVERY_PERIOD = 1000;
-	static final int DISCOVERY_TIMEOUT = 50000;
+	static final int DISCOVERY_TIMEOUT = 10000;
 
 	private static final String DELIMITER = "\t";
 
@@ -39,7 +38,7 @@ public class Discovery {
 	 */
 	public static void announce(String serviceName, String serviceURI) {
 		Log.info(String.format("Starting Discovery announcements on: %s for: %s -> %s", DISCOVERY_ADDR, serviceName, serviceURI));
-		
+
 		byte[] pktBytes = String.format("%s%s%s", serviceName, DELIMITER, serviceURI).getBytes();
 
 		DatagramPacket pkt = new DatagramPacket(pktBytes, pktBytes.length, DISCOVERY_ADDR);
@@ -81,7 +80,7 @@ public class Discovery {
 						results.add(URI.create(ping[1]));
 					}
 				} catch (SocketTimeoutException e) {
-					System.err.println("Listening for: " + serviceName );
+					System.err.println("Listening for: " + serviceName);
 				}
 			}
 		} catch (IOException e) {
@@ -94,14 +93,15 @@ public class Discovery {
 		return results.toArray(new URI[0]);
 
 	}
-	
-	static private void joinGroupInAllInterfaces( MulticastSocket ms ) throws SocketException {
+
+	static private void joinGroupInAllInterfaces(MulticastSocket ms) throws SocketException {
 		Enumeration<NetworkInterface> ifs = NetworkInterface.getNetworkInterfaces();
-		while( ifs.hasMoreElements() ) {
+		while (ifs.hasMoreElements()) {
 			NetworkInterface xface = ifs.nextElement();
 			try {
-				ms.joinGroup(DISCOVERY_ADDR, xface);;				
-			} catch( Exception x ) {
+				ms.joinGroup(DISCOVERY_ADDR, xface);
+				;
+			} catch (Exception x) {
 				x.printStackTrace();
 			}
 		}
