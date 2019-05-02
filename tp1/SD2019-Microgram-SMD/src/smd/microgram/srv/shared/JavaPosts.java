@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import microgram.api.Post;
 import microgram.api.Profile;
@@ -144,15 +143,6 @@ public class JavaPosts implements Posts {
 		getPost(postId).value().setLikes(res.size());
 
 		return ok();
-	}
-
-	@Override
-	public Result<List<String>> getFeed(String userId) {
-		Result<List<String>> following = profiles.following(userId);
-		if (!following.isOK())
-			return following;
-		else
-			return ok(following.value().stream().map(user -> getPosts(user)).filter(Result::isOK).flatMap(okRes -> okRes.value().stream()).collect(Collectors.toList()));
 	}
 
 	@Override

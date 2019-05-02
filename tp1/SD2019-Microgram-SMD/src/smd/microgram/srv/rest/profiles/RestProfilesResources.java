@@ -39,11 +39,6 @@ public class RestProfilesResources extends RestResource implements RestProfiles 
 	}
 
 	@Override
-	public List<String> following(String userId) {
-		return super.resultOrThrow(impl().following(userId));
-	}
-
-	@Override
 	public void deleteProfile(String userId) {
 		super.resultOrThrow(impl().deleteProfile(userId));
 	}
@@ -53,6 +48,11 @@ public class RestProfilesResources extends RestResource implements RestProfiles 
 			impl = new JavaProfiles(Clients.getPosts());
 		}
 		return impl;
+	}
+
+	@Override
+	public List<String> getFeed(String userId) {
+		return super.resultOrThrow(impl().getFeed(userId));
 	}
 
 }

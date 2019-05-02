@@ -10,8 +10,6 @@ import microgram.api.java.Profiles;
 import smd.discovery.Discovery;
 import smd.microgram.clt.rest.RestPostsClient;
 import smd.microgram.clt.rest.RestProfilesClient;
-import smd.microgram.clt.soap.SoapPostsClient;
-import smd.microgram.clt.soap.SoapProfilesClient;
 import smd.microgram.srv.rest.posts.PostsRestServer;
 import smd.microgram.srv.rest.profiles.ProfilesRestServer;
 
@@ -53,7 +51,7 @@ public class Clients {
 			if (server.contains(REST))
 				res = new RestProfilesClient(URI.create(server));
 			else
-				res = new SoapProfilesClient(URI.create(server));
+				res = null;
 			profiles.put(server, res);
 		}
 		return res;
@@ -65,7 +63,7 @@ public class Clients {
 			if (server.contains(REST))
 				res = new RestPostsClient(URI.create(server));
 			else
-				res = new SoapPostsClient(URI.create(server));
+				res = null;
 
 			posts.put(server, res);
 		}

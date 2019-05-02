@@ -53,8 +53,13 @@ public class RestProfilesClient extends RestClient implements Profiles {
 	}
 
 	@Override
-	public Result<List<String>> following(String userId) {
-		return super.reTry(() -> _following(userId));
+	public Result<List<String>> getFeed(String userId) {
+		return super.reTry(() -> _getFeed(userId));
+	}
+
+	@Override
+	public Result<List<Profile>> search(String prefix) {
+		return search(prefix, false);
 	}
 
 	private Result<Profile> _getProfile(String userId) {
@@ -96,22 +101,9 @@ public class RestProfilesClient extends RestClient implements Profiles {
 		});
 	}
 
-	private Result<List<String>> _following(String userId) {
-		Response r = target.path(userId).path(FOLLOWING).request().accept(MediaType.APPLICATION_JSON).get();
-
-		return responseContents(r, Status.OK, new GenericType<List<String>>() {
-		});
+	private Result<List<String>> _getFeed(String userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public Result<List<Profile>> _searchPartition(String prefix) {
-		Response r = target.path(PARTITIONED).queryParam("query", prefix).request().accept(MediaType.APPLICATION_JSON).get();
-
-		return responseContents(r, Status.OK, new GenericType<List<Profile>>() {
-		});
-	}
-
-	@Override
-	public Result<List<Profile>> search(String prefix) {
-		return search(prefix, false);
-	}
 }

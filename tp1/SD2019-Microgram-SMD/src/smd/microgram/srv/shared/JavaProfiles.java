@@ -7,7 +7,6 @@ import static microgram.api.java.Result.ErrorCode.NOT_FOUND;
 import static smd.microgram.srv.shared.KafkaStrings.CREATE_POST;
 import static smd.microgram.srv.shared.KafkaStrings.DELETE_POST;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -118,15 +117,6 @@ public class JavaProfiles implements Profiles {
 	}
 
 	@Override
-	public Result<List<String>> following(String userId) {
-		Set<String> res = following.get(userId);
-		if (res == null)
-			return error(NOT_FOUND);
-		else
-			return ok(new ArrayList<>(res));
-	}
-
-	@Override
 	public Result<Boolean> isFollowing(String userId1, String userId2) {
 
 		Set<String> s1 = following.get(userId1);
@@ -156,4 +146,14 @@ public class JavaProfiles implements Profiles {
 		}
 		return ok();
 	}
+
+	@Override
+	public Result<List<String>> getFeed(String userId) {
+		Set<String> followees = following.get(userId);
+		if (followees != null)
+			return ok(followees.stream().map(userPosts::get).flatMap(s -> s.stream()).collect(Collectors.toList()));
+		else
+			return error(NOT_FOUND);
+	}
+
 }

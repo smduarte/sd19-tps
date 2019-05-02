@@ -76,11 +76,12 @@ public interface Profiles {
 	}
 
 	/**
-	 * Obtains the list of profiles followed by the given user
+	 * Returns the feed of the user profile. The feed is the list of Posts made by
+	 * user profiles followed by the userId profile.
 	 * 
-	 * @param userId - the profile
-	 * @return - list of profiles
+	 * @param userId user profile of the requested feed
+	 * @return (OK,List<PostId>|empty list), NOT_FOUND if the user profile is not
+	 *         known
 	 */
-
-	Result<List<String>> following(String userId);
+	Result<List<String>> getFeed(String userId);
 }

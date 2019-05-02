@@ -49,7 +49,7 @@ public interface RestProfiles {
 
 	@GET
 	@Path("/{userId}/following/")
-	List<String> following(@PathParam("userId") String userId);
+	List<String> getFeed(@PathParam("userId") String userId);
 
 	@DELETE
 	@Path("/{userId}")

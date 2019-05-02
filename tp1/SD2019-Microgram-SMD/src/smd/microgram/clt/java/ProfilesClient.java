@@ -50,7 +50,7 @@ public class ProfilesClient extends RetryClient implements Profiles {
 	}
 
 	@Override
-	public Result<List<String>> following(String userId) {
-		return reTry(() -> impl.following(userId));
+	public Result<List<String>> getFeed(String userId) {
+		return reTry(() -> impl.getFeed(userId));
 	}
 }

@@ -45,7 +45,7 @@ public class RestPostsResources extends RestResource implements RestPosts {
 
 	@Override
 	public List<String> getFeed(String userId) {
-		return super.resultOrThrow(impl().getFeed(userId));
+		return null;
 	}
 
 	synchronized protected Posts impl() {
