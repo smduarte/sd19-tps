@@ -1,4 +1,4 @@
-FROM smduarte/sd19-tp1-openjdk8
+FROM smduarte/java
 
 MAINTAINER Sérgio Duarte <smd@fct.unl.pt>
 

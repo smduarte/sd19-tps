@@ -1,5 +1,8 @@
 package microgram.api;
 
+import utils.Hash;
+import utils.JSON;
+
 /**
  * Represents a Post.
  * 
@@ -21,14 +24,12 @@ public class Post {
 
 	public Post() {}
 
-
-	public Post(String postId, String ownerId, String mediaUrl, String location, long timestamp, int likes) {
+	public Post(String postId, String ownerId, String mediaUrl, String location, long timestamp) {
 		this.postId = postId;
 		this.ownerId = ownerId;
 		this.mediaUrl = mediaUrl;
 		this.location = location;
 		this.timestamp = timestamp;
-		this.likes = likes;
 	}
 	
 	public String getMediaUrl() {
@@ -43,6 +44,8 @@ public class Post {
 	}
 	
 	public String getPostId() {
+		if( postId == null ) 
+			postId = generatePostId();
 		return postId;
 	}
 	
@@ -77,4 +80,20 @@ public class Post {
 	public void setLikes(int likes) {
 		this.likes = likes;
 	}
+	
+	@Override
+	public String toString() {
+		return JSON.encode( this );
+	}
+	
+	private String generatePostId() {
+		return getOwnerId() + DELIMITER + Hash.of( this.mediaUrl );		
+	}
+	
+	public static String ownerIdFromPostId( String postId ) {
+		int i = postId.indexOf(DELIMITER);
+		return i >= 0 ? postId.substring(0, i) : postId;
+	}
+	
+	private static final char DELIMITER = '-';
 }

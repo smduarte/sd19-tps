@@ -78,8 +78,8 @@ public interface Profiles {
 	/**
 	 * Obtains the list of profiles followed by the given user
 	 * 
-	 * @param userId - the profile
-	 * @return - list of profiles
+	 * @param userId - the following profile
+	 * @return - list of profiles followed
 	 */
 
 	Result<List<String>> following(String userId);

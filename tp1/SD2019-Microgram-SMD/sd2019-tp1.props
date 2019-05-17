@@ -1,16 +1,16 @@
-posts-rest-service-mainclass=smd.microgram.srv.rest.posts.PostsRestServer
+posts-rest-service-mainclass=microgram.impl.srv.rest.posts.PostsRestServer
 posts-rest-service-port=17777
 
-profiles-rest-service-mainclass=smd.microgram.srv.rest.profiles.ProfilesRestServer
+profiles-rest-service-mainclass=microgram.impl.srv.rest.profiles.ProfilesRestServer
 profiles-rest-service-port=18888
 
-mediastorage-rest-service-mainclass=smd.microgram.srv.rest.media.MediaRestServer
+mediastorage-rest-service-mainclass=microgram.impl.srv.rest.media.MediaRestServer
 mediastorage-rest-service-port=12222
 
-posts-soap-service-mainclass=smd.microgram.srv.soap.PostsSoapServer
+posts-soap-service-mainclass=microgram.impl.srv.soap.PostsSoapServer
 posts-soap-service-port=27777
 
-profiles-soap-service-mainclass=smd.microgram.srv.soap.ProfilesSoapServer
+profiles-soap-service-mainclass=microgram.impl.srv.soap.ProfilesSoapServer
 profiles-soap-service-port=28888
 
 discovery-multicast-address=226.226.226.226:2266
