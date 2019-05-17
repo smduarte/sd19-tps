@@ -4,4 +4,4 @@ echo "Launching tester... args: " "$@"
 	docker network create --driver=bridge --subnet=172.20.0.0/16 sd-net
 
 
-java -cp "/home/sd/*" tests.Tester "$@"
+java -Djava.util.concurrent.ForkJoinPool.common.parallelism=16 -cp "/home/sd/*" tests.Tester "$@"

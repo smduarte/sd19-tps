@@ -21,6 +21,7 @@ import org.glassfish.jersey.client.ClientProperties;
 import microgram.api.java.Result;
 import microgram.api.java.Result.ErrorCode;
 import tests.clients.RetryClient;
+import tests.clients.ServerCrashedException;
 import utils.Sleep;
 
 abstract class RestClient extends RetryClient {
@@ -80,6 +81,9 @@ abstract class RestClient extends RetryClient {
 				func.run();
 				return;
 			} catch (ProcessingException x) {
+				if (x.getCause() instanceof java.net.NoRouteToHostException)
+					throw new ServerCrashedException(uri);
+				x.printStackTrace();
 				Sleep.ms(RETRY_SLEEP);
 			}
 	}
@@ -92,6 +96,10 @@ abstract class RestClient extends RetryClient {
 			try {
 				return func.get();
 			} catch (ProcessingException x) {
+				if (x.getCause() instanceof java.net.NoRouteToHostException)
+					throw new ServerCrashedException(uri);
+				
+				x.printStackTrace();
 				Sleep.ms(RETRY_SLEEP);
 			}
 	}
@@ -118,4 +126,5 @@ abstract class RestClient extends RetryClient {
 			return ErrorCode.INTERNAL_ERROR;
 		}
 	}
+
 }

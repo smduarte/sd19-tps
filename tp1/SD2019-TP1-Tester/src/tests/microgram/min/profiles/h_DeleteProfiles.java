@@ -1,9 +1,11 @@
 package tests.microgram.min.profiles;
 
+import java.util.List;
+
 import loops.Loop;
 import microgram.api.Profile;
 import microgram.api.java.Result;
-import tests.FailedTestException;
+import tests.TestFailedException;
 import tests.microgram.MicrogramTestOperations;
 
 public class h_DeleteProfiles extends MicrogramTestOperations {
@@ -14,7 +16,7 @@ public class h_DeleteProfiles extends MicrogramTestOperations {
 
 	@Override
 	protected void prepare() throws Exception {
-		println(String.format("Testing Profiles Service [ get Profile... ] %s ", description));
+		println(String.format("Testing Profiles Service [ delete Profile... ] %s ", description));
 		super.prepare();
 
 	}
@@ -24,12 +26,19 @@ public class h_DeleteProfiles extends MicrogramTestOperations {
 
 		super.generateProfiles(250, false, false);
 
-		Loop.items(jprofiles.userIds(), parallel).forEach((userId) -> {
-			Result<Profile> expected = jprofiles.getProfile(userId);
-			Profile result = doOrThrow(() -> anyProfilesClient().getProfile(userId), expected.error(), "Profiles.getProfile() failed test... Expected %s got: [%s]");
-			if (expected.isOK() && !super.equals(expected.value(), result))
-				throw new FailedTestException("Profiles.getProfile() failed test... <Retrieved Profile data does not match...");
+		Loop.items(lProfiles.userIds(), parallel).forEach((userId) -> {
+
+			Result<Void> expected = lProfiles.deleteProfile(userId);
+
+			doOrThrow(() -> anyProfilesClient().deleteProfile(userId), expected.error(), "Profiles.deleteProfile() failed test... Expected %s got: [%s]");
 		});
+
+		Result<List<Profile>> expected = lProfiles.search("");
+
+		List<Profile> obtained = doOrThrow(() -> anyProfilesClient().search(""), expected.error(), "Profiles.search() failed test... Expected %s got: [%s]");
+
+		if (expected.isOK() && expected.value().size() != obtained.size())
+			throw new TestFailedException("Profiles.search() failed test...<search did not produce the expected results>, wanted:" + expected.value() + " got: " + obtained);
 
 	}
 }

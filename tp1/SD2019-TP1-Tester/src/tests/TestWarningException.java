@@ -6,8 +6,9 @@ public class TestWarningException extends RuntimeException {
 	public TestWarningException(String msg) {
 		super(msg);
 	}
-	
+
+	@Override
 	public String toString() {
-		return String.format("FailedTestException: %s", this.getMessage() );
+		return String.format("WARNING: %s", this.getMessage());
 	}
 }

@@ -68,28 +68,12 @@
 				</executions>
 				<configuration>
 					<contextDirectory>${project.basedir}</contextDirectory>
-					<repository>smduarte/sd19-tp1-tester</repository>
+					<repository>smduarte/sd19-tp1-tester-final</repository>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
-		<dependency>
-			<groupId>sd2019</groupId>
-			<artifactId>sd19-tp1-smd</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>sd2019</groupId>
-			<artifactId>sd19-tp1-api</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>sd2019</groupId>
-			<artifactId>sd19-tp1-code</artifactId>
-			<version>1.0</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
@@ -123,14 +107,6 @@
 			<artifactId>docker-client</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.sun.xml.ws</groupId>
 			<artifactId>jaxws-rt</artifactId>
 		</dependency>
@@ -150,6 +126,18 @@
 			<groupId>com.github.javafaker</groupId>
 			<artifactId>javafaker</artifactId>
 			<version>0.15</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -235,7 +223,11 @@
 				<artifactId>commons-collections4</artifactId>
 				<version>4.0</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.apache.kafka</groupId>
+				<artifactId>kafka-clients</artifactId>
+				<version>2.2.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

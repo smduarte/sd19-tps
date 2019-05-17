@@ -1,31 +1,36 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-class Locks {
+public class Lock implements AutoCloseable {
 
-	public static void lock(Object id) {
-		ReentrantLock lock = locks.get(id), newLock;
-		if (lock == null) {
-			lock = locks.putIfAbsent(id, newLock = new ReentrantLock(true));
-			if (lock == null)
-				lock = newLock;
-		}
+	List<Object> _ids;
+
+	public Lock(Object... ids) {
+		_ids = new ArrayList<>(new HashSet<>(Arrays.asList(ids)));
+		_ids.forEach(Lock::acquire);
+	}
+
+	@Override
+	public void close() throws Exception {
+		Collections.reverse(_ids);
+		_ids.forEach(i -> _locks.get(i).unlock());
+	}
+
+	static private void acquire(Object id) {
+		ReentrantLock lock = _locks.computeIfAbsent(id, (__) -> new ReentrantLock(true));
 		lock.lock();
 	}
 
-	public static void unlock(Object id) {
-		ReentrantLock lock = locks.get(id);
-		if (lock == null)
-			throw new RuntimeException("Unbalanced unlock for :" + id);
-
-		lock.unlock();
+	public static void disposeAll() {
+		_locks.clear();
 	}
 
-	public boolean interrupted() {
-		return Thread.currentThread().isInterrupted();
-	}
-
-	static ConcurrentHashMap<Object, ReentrantLock> locks = new ConcurrentHashMap<Object, ReentrantLock>();
+	static ConcurrentHashMap<Object, ReentrantLock> _locks = new ConcurrentHashMap<>();
 }

@@ -3,25 +3,28 @@ package microgram.api;
 /**
  * Represents a user Profile
  * 
- * A user Profile has an unique userId; a comprises: the user's full name; and, a photo, stored at some photourl. This information is immutable.
- * The profile also gathers the user's statistics: ie., the number of posts made, the number of profiles the user is following, the number of profiles following this user. 
- * All these are mutable.
+ * A user Profile has an unique userId; a comprises: the user's full name; and,
+ * a photo, stored at some photourl. This information is immutable. The profile
+ * also gathers the user's statistics: ie., the number of posts made, the number
+ * of profiles the user is following, the number of profiles following this
+ * user. All these are mutable.
  * 
  * @author smd
  *
  */
 public class Profile {
-	
+
 	String userId;
 	String fullName;
 	String photoUrl;
-	
+
 	int posts;
 	int following;
 	int followers;
-	
-	public Profile() {}
-	
+
+	public Profile() {
+	}
+
 	public Profile(String userId, String fullName, String photoUrl, int posts, int following, int followers) {
 		this.userId = userId;
 		this.fullName = fullName;
@@ -77,5 +80,10 @@ public class Profile {
 
 	public void setFollowers(int followers) {
 		this.followers = followers;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s, %s, %s, posts: %s, following: %s, followers: %s", userId, fullName, photoUrl, posts, following, followers);
 	}
 }

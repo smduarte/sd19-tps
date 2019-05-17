@@ -18,5 +18,5 @@ mkdir -p $LOGS
 #docker pull $2
 
 #execute the client with the given command line parameters
-docker run --network=sd-net -it -v $LOGS:/logs/ -v /var/run/docker.sock:/var/run/docker.sock smduarte/sd19-tp1-tester:latest $*
+docker run --rm --network=sd-net -it -v $LOGS:/logs/ -v /var/run/docker.sock:/var/run/docker.sock smduarte/sd19-tp1-tester-final:latest $*
 

@@ -44,22 +44,7 @@ public class Container {
 		return ip;
 	}
 
-//	public Container start(String image) throws Exception {
-//		Log.finest(String.format("Starting: %s", image));
-//		if(network != null )
-//			this.id = Docker.get().run(image, name, network, aliases);
-//		else
-//			this.id = Docker.get().run(image, command)
-//		this.ip = Docker.get().ip(id, network);
-//		
-//		Log.finest(id + "/" + ip );
-//		return this;
-//	}
-//	
-//	public Container start(String image, String cmd) throws Exception {
-//		return start( image, cmd.split(" "));
-//	}
-//	
+
 	public Container start(String image, String cmd) throws Exception {
 		
 		if( network != null )
@@ -72,14 +57,6 @@ public class Container {
 		Log.finest(id);
 		return this;
 	}
-
-//	public Container startWithOverride(String image, String cmd) throws Exception {
-//		this.id = Docker.get().runViaEntrypoint(image, cmd, name);
-//		this.ip = Docker.get().client().inspectContainer(id).networkSettings().ipAddress();
-//		Log.fine(String.format("Started: %s [ %s ]", name, cmd));
-//		Log.finest(id);
-//		return this;
-//	}
 
 	
 	public void exec(String cmd) throws Exception {

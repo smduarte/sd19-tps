@@ -1,28 +1,30 @@
 package tests.deployment;
 
+import static java.util.stream.IntStream.range;
 
-import static utils.Log.Log;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import docker.Container;
 import tests.BaseTest;
-import tests.FailedTestException;
+import tests.BaseTest.MandatoryTest;
+import tests.BaseTest.OptionalTest;
+import tests.TestWarningException;
 
-
+@OptionalTest
+@MandatoryTest
 public class DockerParallelism extends BaseTest {
 
-	private static final String DOCKER_CMD = "java -version";
-	
 	@Override
-	protected void prepare() throws Exception {		
-		printf("Testing: Running container with supplied image [executing: %s]\n", DOCKER_CMD);		
+	protected void prepare() throws Exception {
+		printf("Testing: Docker engine CPU cores...\n");
 	}
-	
+
 	@Override
-	protected void execute() throws Exception {		
-		Container java = super.createContainer("", false).start( image(), DOCKER_CMD);
-		sleep(true);
-		Log.fine( java.logs() );
-		if( ! java.logs().contains("openjdk") )
-			throw new FailedTestException("java (openjdk) failed to execute...");
+	protected void execute() throws Exception {
+
+		Set<String> names = range(0, 1000).parallel().mapToObj(i -> Thread.currentThread().getName()).collect(Collectors.toSet());
+		if (names.size() == 1 || Runtime.getRuntime().availableProcessors() == 1)
+			throw new TestWarningException("Runtime environment only has 1 CPU - concurrent tests may not provide reliable results!!!!");
+
 	}
 }

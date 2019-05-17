@@ -17,7 +17,6 @@ public class RestProfilesClient extends RestClient implements Profiles {
 
 	private static final String FOLLOWING = "/following/";
 	private static final String FOLLOWERS = "/followers/";
-	private static final String PARTITIONED = "partitioned";
 
 	public RestProfilesClient(URI serverUri) {
 		super(serverUri);
@@ -39,8 +38,8 @@ public class RestProfilesClient extends RestClient implements Profiles {
 	}
 
 	@Override
-	public Result<List<Profile>> search(String prefix, boolean partition) {
-		return super.reTry(() -> _search(prefix, partition));
+	public Result<List<Profile>> search(String prefix) {
+		return super.reTry(() -> _search(prefix));
 	}
 
 	@Override
@@ -51,11 +50,6 @@ public class RestProfilesClient extends RestClient implements Profiles {
 	@Override
 	public Result<Boolean> isFollowing(String userId1, String userId2) {
 		return super.reTry(() -> _isFollowing(userId1, userId2));
-	}
-
-	@Override
-	public Result<List<String>> following(String userId) {
-		return super.reTry(() -> _following(userId));
 	}
 
 	private Result<Profile> _getProfile(String userId) {
@@ -77,8 +71,8 @@ public class RestProfilesClient extends RestClient implements Profiles {
 		return verifyResponse(r, Status.NO_CONTENT);
 	}
 
-	private Result<List<Profile>> _search(String prefix, boolean partitioned) {
-		Response r = target.queryParam("query", prefix).queryParam(PARTITIONED, partitioned).request().accept(MediaType.APPLICATION_JSON).get();
+	private Result<List<Profile>> _search(String prefix) {
+		Response r = target.queryParam("query", prefix).request().accept(MediaType.APPLICATION_JSON).get();
 
 		return responseContents(r, Status.OK, new GenericType<List<Profile>>() {
 		});
@@ -95,24 +89,5 @@ public class RestProfilesClient extends RestClient implements Profiles {
 
 		return responseContents(r, Status.OK, new GenericType<Boolean>() {
 		});
-	}
-
-	private Result<List<String>> _following(String userId) {
-		Response r = target.path(userId).path(FOLLOWING).request().accept(MediaType.APPLICATION_JSON).get();
-
-		return responseContents(r, Status.OK, new GenericType<List<String>>() {
-		});
-	}
-
-	public Result<List<Profile>> _searchPartition(String prefix) {
-		Response r = target.path(PARTITIONED).queryParam("query", prefix).request().accept(MediaType.APPLICATION_JSON).get();
-
-		return responseContents(r, Status.OK, new GenericType<List<Profile>>() {
-		});
-	}
-
-	@Override
-	public Result<List<Profile>> search(String prefix) {
-		return search(prefix, false);
 	}
 }

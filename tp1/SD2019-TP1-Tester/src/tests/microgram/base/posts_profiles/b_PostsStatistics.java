@@ -1,71 +1,47 @@
-package tests._5_microgram_base.posts_profiles;
+package tests.microgram.base.posts_profiles;
 
-import static microgram.api.java.Result.ErrorCode.CONFLICT;
-import static microgram.api.java.Result.ErrorCode.OK;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import loops.Loop;
-import microgram.api.Post;
 import microgram.api.Profile;
 import microgram.api.java.Result;
-import smd.microgram.srv.shared.JavaPostsV2;
-import smd.microgram.srv.shared.JavaProfilesV2;
-import tests.FailedTestException;
-import tests._4_microgram_min.MicrogramTest;
+import tests.TestFailedException;
+import tests.microgram.MicrogramTestOperations;
 
-public class _02_PostsStatistics extends MicrogramTest {
+public class b_PostsStatistics extends MicrogramTestOperations {
 
-	public _02_PostsStatistics(boolean parallel, int restProfilesServers, int soapProfilesServers, int restPostsServers, int soapPostsServers, String description) {
-		super( parallel, restProfilesServers, soapProfilesServers, restPostsServers, soapPostsServers, description );
+	public b_PostsStatistics(boolean parallel, int restProfilesServers, int soapProfilesServers, int restPostsServers, int soapPostsServers, String description) {
+		super(parallel, false, restProfilesServers, soapProfilesServers, restPostsServers, soapPostsServers, description);
 	}
-	
+
 	@Override
 	protected void prepare() throws Exception {
-		println(String.format("Testing Profiles+Posts Service [ Profile's posts statistics... ] %s ", description));
-		super.prepare();		
+		println(String.format("Testing Profiles+Posts Service [ Profile's posts statistics (2) ... ] %s ", description));
+		super.prepare();
 	}
 
 	@Override
 	protected void execute() throws Exception {
 
-		JavaProfilesV2 jprofiles = new JavaProfilesV2(null, false);
-		
-		Loop.times( NUM_OPS, parallel ).forEach( () -> {
-			Profile p = genNewProfile();
-			
-			Result<Void> res = jprofiles.createProfile(p);	
-			if( ! parallel || res.isOK() ) {
-				doOrThrow( () -> anyProfilesClient().createProfile(p), res.error(),  "Profiles.createProfile() failed test... Expected [%s] got: [%s]");
-					
-				if_NotFailed(() -> anyProfilesClient().createProfile(p), CONFLICT, "Profiles.createProfile() failed test... Expected [%s] got: [%s]");		
-			}
-		});
-		
-		List<String> users = new ArrayList<>(jprofiles.search("").value().stream().map( p -> p.getUserId()).collect( Collectors.toList()));
+		super.generateProfiles(50, false, false);
 
-		JavaPostsV2 jposts = new JavaPostsV2(jprofiles, false);
-		
-		Loop.times( 5 * NUM_OPS, parallel ).forEach( () -> {
-			
-			String owner = users.get( random().nextInt( users.size()) );
-			Post p = genNewPost( owner );
-			
-			Result<String> expected = jposts.createPost(p);			
-			doOrThrow( () -> anyPostsClient().createPost(p), expected.error(),  "Posts.createPost() failed test... Expected [%s] got: [%s]");
-			if_NotFailed(() -> anyPostsClient().createPost(p), CONFLICT, "Posts.createPost() failed test... Expected [%s] got: [%s]");
-		});
-		
-		Loop.items( users, parallel).forEach( user -> {
-			
-			int userPosts = jposts.getPosts(user).value().size();
-			Profile p = doOrThrow( () -> anyProfilesClient().getProfile(user), OK,  "Profiles.getProfile() failed test... Expected [%s] got: [%s]");
-			if( p.getPosts() != userPosts )
-				throw new FailedTestException("Profiles.getProfile() failed test...<returned wrong result>, wanted:" + userPosts + " got: " + p.getPosts() );
+		super.generateOnePostPerUser();
 
+		super.generatePosts(200);
+
+		super.deletePosts(50);
+
+		super.sleep(true);
+
+		Loop.items(lProfiles.userIds(), parallel).forEach(user -> {
+
+			Result<List<String>> expected = lPosts.getPosts(user);
+
+			Profile obtained = doOrThrow(() -> anyProfilesClient().getProfile(user), expected.error(), "Profiles.getProfile() failed test... Expected %s got: [%s]");
+
+			if (expected.isOK() && expected.value().size() != obtained.getPosts())
+				throw new TestFailedException("Profiles.getProfile() failed test...<returned wrong result>, wanted:" + expected.value().size() + " got: " + obtained.getPosts());
 		});
 	}
-	
+
 }

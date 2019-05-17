@@ -1,73 +1,42 @@
-package tests._4_microgram_min.posts;
+package tests.microgram.min.posts;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-
-import com.github.javafaker.Faker;
+import static microgram.api.java.Result.ErrorCode.NOT_FOUND;
+import static microgram.api.java.Result.ErrorCode.OK;
+import static utils.Log.Log;
 
 import loops.Loop;
-import microgram.api.Post;
-import microgram.api.Profile;
-import microgram.api.java.Result;
-import smd.microgram.srv.shared.JavaPostsV2;
-import smd.microgram.srv.shared.JavaProfilesV2;
-import tests._4_microgram_min.MicrogramTest;
+import tests.microgram.MicrogramTestOperations;
 
-public class _07_GetUserFeed extends MicrogramTest {
+public class g_GetUserFeed extends MicrogramTestOperations {
 
-	Faker faker;
-	
-	public _07_GetUserFeed(boolean parallel, int restProfilesServers, int soapProfilesServers, int restPostsServers, int soapPostsServers, String description) {
-		super( parallel, restProfilesServers, soapProfilesServers, restPostsServers, soapPostsServers, description );
+	public g_GetUserFeed(boolean parallel, int restProfilesServers, int soapProfilesServers, int restPostsServers, int soapPostsServers, String description) {
+		super(parallel, restProfilesServers, soapProfilesServers, restPostsServers, soapPostsServers, description);
 	}
-	
+
 	@Override
 	protected void prepare() throws Exception {
 		println(String.format("Testing Posts Service [ getFeed... ] %s ", description));
 		super.prepare();
-		
-		faker = new Faker( new Locale("pt"));
+
 	}
 
 	@Override
 	protected void execute() throws Exception {
 
+		super.generateProfiles(50, false, false);
 
-		JavaProfilesV2 jprofiles = new JavaProfilesV2(null);
-		
-		Loop.times( NUM_OPS/2, parallel ).forEach( () -> {
-			Profile p = genNewProfile();
-			Result<Void> expected = jprofiles.createProfile(p);
-			doOrThrow( () -> anyProfilesClient().createProfile(p), expected.error(),  "Profiles.createProfile() failed test... Expected [%s] got: [%s]");
+		super.followProfiles(150, true, () -> true);
+
+		super.followProfiles(50, true, () -> false);
+
+		super.generateOnePostPerUser();
+
+		super.generatePosts(200);
+
+		Log.fine("Call getFeed...");
+		Loop.times(250, parallel).forEach((i) -> {
+			String user = lProfiles.randomId();
+			doOrThrow(() -> anyPostsClient().getFeed(user), either(OK, NOT_FOUND), "Posts.getFeed() failed test... Expected %s got: [%s]");
 		});
-		
-		List<String> users = new ArrayList<>(jprofiles.search("").value().stream().map( p -> p.getUserId()).collect( Collectors.toList()));
-		
-		List<String> posts = new CopyOnWriteArrayList<>();
-		JavaPostsV2 jposts = new JavaPostsV2(jprofiles);
-		
-		Loop.times( 2*NUM_OPS, parallel ).forEach( () -> {
-			
-			String user1 = users.get( random().nextInt( users.size() ));
-			
-			Post p = genNewPost( user1, false );
-
-			Result<String> expected = jposts.createPost(p);						
-			String id = doOrThrow( () -> anyPostsClient().createPost(p), expected.error(),  "Posts.createPost() failed test... Expected [%s] got: [%s]");
-			if ( expected.isOK() )
-				posts.add( id );
-		});
-
-		Loop.times( 2*NUM_OPS, parallel ).forEach( (i) -> {
-			
-			String user = users.get( random().nextInt( users.size() ));
-			
-			Result<List<String>> expected = jposts.getFeed(user);
-			doOrThrow( () -> anyPostsClient().getFeed(user), expected.error(),  "Posts.getFeed() failed test... Expected [%s] got: [%s]");
-
-		});
-	}	
+	}
 }

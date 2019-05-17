@@ -105,6 +105,18 @@ public class Docker {
 		docker.removeContainer(id);
 	}
 
+	public String start(String image) throws Exception {
+		final HostConfig hostConfig = HostConfig.builder().privileged(true).build();
+		
+		final ContainerConfig containerConfig = ContainerConfig.builder().image(image).hostConfig(hostConfig).build();
+
+		final ContainerCreation creation = docker.createContainer(containerConfig);
+
+		docker.startContainer(creation.id());
+		return creation.id();
+
+	}
+	
 	public String run(String image, String... command) throws Exception {
 
 		final HostConfig hostConfig = HostConfig.builder().privileged(true).build();
@@ -145,7 +157,7 @@ public class Docker {
 
 		List<String> cmd = new ArrayList<>();
 		Collections.addAll(cmd,
-				new String[] { "/usr/local/bin/docker", "run", "--privileged", "-d", "--network=" + network, "--name", name, image });
+				new String[] { "/usr/local/bin/docker", "run", "--rm", "--privileged", "-d", "--network=" + network, "--name", name, image });
 		;
 		Collections.addAll(cmd, command);
 

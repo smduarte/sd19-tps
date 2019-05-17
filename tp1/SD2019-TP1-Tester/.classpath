@@ -16,8 +16,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/SD2019-Microgram-API"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SD2019-Microgram-Code"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SD2019-Microgram-SMD"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

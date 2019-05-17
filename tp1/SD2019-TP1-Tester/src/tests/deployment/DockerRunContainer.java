@@ -1,11 +1,11 @@
-package tests._1_deployment;
+package tests.deployment;
 
 
 import static utils.Log.Log;
 
 import docker.Container;
 import tests.BaseTest;
-import tests.FailedTestException;
+import tests.TestFailedException;
 
 
 public class DockerRunContainer extends BaseTest {
@@ -23,6 +23,6 @@ public class DockerRunContainer extends BaseTest {
 		sleep(true);
 		Log.fine( java.logs() );
 		if( ! java.logs().contains("openjdk") )
-			throw new FailedTestException("java (openjdk) failed to execute...");
+			throw new TestFailedException("java (openjdk) failed to execute...");
 	}
 }

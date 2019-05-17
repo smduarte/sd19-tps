@@ -1,4 +1,4 @@
-package tests._3_services;
+package tests.services;
 
 import static utils.Log.Log;
 

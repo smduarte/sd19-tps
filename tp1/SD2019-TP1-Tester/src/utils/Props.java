@@ -101,30 +101,28 @@ public class Props {
 	}
 
 	public static String get(Properties props, String prop, String defaultVal) {
-		String p = props.getProperty(prop.toLowerCase());
-		return p == null ? defaultVal : p;
+		return props.getProperty(prop.toLowerCase(), defaultVal );
 	}
 
 	public static boolean boolValue(Properties props, String prop, boolean defVal) {
-		String p = props.getProperty(prop.toLowerCase());
-		return p == null ? defVal : Boolean.valueOf(p);
+		String p = props.getProperty(prop.toLowerCase(), Boolean.toString( defVal ));
+		return p.isEmpty() ? defVal : Boolean.valueOf(p);
 	}
 
 	public static int intValue(Properties props, String prop, int defVal) {
-		String p = props.getProperty(prop.toLowerCase());
-		return p == null ? defVal : Integer.valueOf(p);
+		String p = props.getProperty(prop.toLowerCase(), Integer.toString(defVal));
+		return p.isEmpty()? defVal : Integer.valueOf(p);
 	}
 
 	public static long longValue(Properties props, String prop, long defVal) {
-		String p = props.getProperty(prop.toLowerCase());
-		return p == null ? defVal : Long.valueOf(p);
+		String p = props.getProperty(prop.toLowerCase(), Long.toString(defVal));
+		return p.isEmpty() ? defVal : Long.valueOf(p);
 	}
 
 	public static String stringValue(Properties props, String prop, String defVal) {
-		String p = props.getProperty(prop.toLowerCase());
-		return p == null ? defVal : p;
+		return props.getProperty(prop.toLowerCase(), defVal);
 	}
-	
+		
 	public static Set<String> keySet() {
 		return _props.keySet()
 				.stream()

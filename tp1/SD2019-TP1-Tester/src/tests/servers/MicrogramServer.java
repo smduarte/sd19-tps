@@ -7,6 +7,7 @@ import java.net.URI;
 import docker.Container;
 import docker.ContainerFactory;
 import docker.Docker;
+import tests.TestFailedException;
 
 public class MicrogramServer<T> {
 	
@@ -26,9 +27,12 @@ public class MicrogramServer<T> {
 		return uri.toString();
 	}
 
-	public void start(ContainerFactory factory, String mainClass, String name) throws Exception {				
+	public void start(ContainerFactory factory, String mainClass, String name, String extraArgs) throws Exception {	
+		if( mainClass == null || mainClass.isEmpty() )
+			throw new TestFailedException(String.format("Cannot execute server: %s [check mainclass value in .props file]", name));
+		
 		this.container = factory.createContainer( name, true );
-		this.container.start(factory.image(), String.format("java -cp /home/sd/* %s", mainClass));
+		this.container.start(factory.image(), String.format("java -cp /home/sd/* %s %s", mainClass, extraArgs));
 	}
 	
 	public Container container() {
